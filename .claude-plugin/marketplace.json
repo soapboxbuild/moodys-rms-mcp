@@ -1,10 +1,10 @@
 {
-  "name": "arcadia-plugins",
+  "name": "moodys-rms-plugins",
   "owner": { "name": "Soapbox", "url": "https://soapbox.build" },
   "plugins": [{
-    "name": "arcadia-arc",
-    "source": { "source": "github", "repo": "soapboxbuild/arcadia-mcp" },
-    "description": "Connect 7,000+ utilities, retrieve bills and 15-minute interval data, calculate carbon emissions.",
+    "name": "moodys-rms",
+    "source": { "source": "github", "repo": "soapboxbuild/moodys-rms-mcp" },
+    "description": "Moody's RMS Climate on Demand — property-level physical climate risk across all hazard types.",
     "version": "0.1.0"
   }]
 }

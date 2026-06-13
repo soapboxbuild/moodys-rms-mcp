@@ -1,5 +1,5 @@
 {
-  "name": "arcadia-mcp",
+  "name": "moodys-rms-mcp",
   "version": "0.1.0",
   "type": "module",
   "scripts": {
@@ -16,5 +16,6 @@
     "@types/node": "^25.9.3",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
-  }
+  },
+  "description": "Moody's RMS Climate on Demand \u2014 property-level physical climate risk scoring across flood, wind, wildfire, and storm surge hazards."
 }
