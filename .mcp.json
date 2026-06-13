@@ -1,9 +1,9 @@
 {
   "mcpServers": {
-    "arcadia": {
+    "moodys-rms": {
       "type": "http",
-      "url": "https://arcadia-mcp-production.up.railway.app/mcp",
-      "headers": { "Authorization": "Bearer ${ARCADIA_API_KEY}" }
+      "url": "https://moodys-rms-mcp-production-f6b8.up.railway.app/mcp",
+      "headers": { "Authorization": "${MOODYS_RMS_API_KEY}" }
     }
   }
 }
