@@ -8,7 +8,8 @@ import { z } from "zod";
 // Moody's RMS Climate on Demand
 // Docs: https://developer.rms.com/climate-on-demand
 // Auth: API key in Authorization header (no Bearer prefix)
-// Host: tenant-specific — pass via X-RMS-Host header or RMS_HOST env var
+// Host: set RMS_HOST env var to your tenant hostname (e.g. api-tenant.rms.com)
+// The host is NEVER accepted from request headers to prevent SSRF.
 
 const DEFAULT_HOST = process.env.RMS_HOST ?? "";
 
@@ -112,15 +113,16 @@ function createServer(apiKey: string, host: string): McpServer {
 }
 
 const app = new Hono();
-app.use("*", cors({ origin: "*", allowMethods: ["GET", "POST", "DELETE", "OPTIONS"], allowHeaders: ["Content-Type", "Authorization", "X-RMS-Host", "mcp-session-id", "Last-Event-ID", "mcp-protocol-version"], exposeHeaders: ["mcp-session-id", "mcp-protocol-version"] }));
-app.get("/health", (c) => c.json({ status: "ok", service: "moodys-rms-mcp" }));
+app.use("*", cors({ origin: "*", allowMethods: ["GET", "POST", "DELETE", "OPTIONS"], allowHeaders: ["Content-Type", "Authorization", "mcp-session-id", "Last-Event-ID", "mcp-protocol-version"], exposeHeaders: ["mcp-session-id", "mcp-protocol-version"] }));
+app.get("/health", (c) => c.json({ status: "ok", service: "moodys-rms-mcp", host_configured: !!DEFAULT_HOST }));
 
 app.all("/mcp", async (c) => {
   const authHeader = c.req.header("Authorization") ?? c.req.header("authorization") ?? "";
   const apiKey = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : authHeader.trim();
-  const host = c.req.header("X-RMS-Host") ?? c.req.header("x-rms-host") ?? DEFAULT_HOST;
+  // Host is pinned to RMS_HOST env var — never from request headers (SSRF prevention)
+  const host = DEFAULT_HOST;
   if (!apiKey) return c.json({ error: "Authorization header required (your RMS API key)" }, 401);
-  if (!host) return c.json({ error: "X-RMS-Host header required (your RMS tenant hostname, e.g. api-tenant.rms.com)" }, 400);
+  if (!host) return c.json({ error: "RMS_HOST env var not configured. Set it to your tenant hostname (e.g. api-tenant.rms.com)" }, 500);
   const server = createServer(apiKey, host);
   const transport = new WebStandardStreamableHTTPServerTransport({ sessionIdGenerator: undefined });
   await server.connect(transport);
