@@ -2,7 +2,7 @@
   "mcpServers": {
     "moodys-rms": {
       "type": "http",
-      "url": "https://moodys-rms-mcp-production-f6b8.up.railway.app/mcp",
+      "url": "https://moodys-rms-mcp.mcp.soapbox.build/mcp",
       "headers": { "Authorization": "${MOODYS_RMS_API_KEY}" }
     }
   }
